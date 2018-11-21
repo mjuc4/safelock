@@ -113,7 +113,7 @@ class SafeLock(QWidget):
         self.activateWindow()
         self.setWindowTitle("safelock " + self.Version)
         self.setToolTip(
-            "Just drag and drop any files or folders" +
+            "swJust drag and drop any files or folders" +
             " to ecrypt or a .sld file to decrypt")
         self.setAcceptDrops(True)
         self.show()
