@@ -18,7 +18,7 @@ from sqlalchemy.orm import sessionmaker
 from threads import EncryptTH, DecryptTH
 from ex_functions import encryptit, isenct, r_path
 from hashlib import sha256
-
+from login import *
 
 class SafeLock(QWidget):
     def __init__(self):
@@ -430,6 +430,9 @@ class SafeLock(QWidget):
 
 def gui():
     app = QApplication(argv)
-    window = SafeLock()
-    window.show()
+    example = Example()
+    example.show()
+    app.exit()
+  
     app.exec_()
+    
