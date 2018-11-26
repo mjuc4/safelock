@@ -9,7 +9,7 @@ from PySide.QtGui import QDesktopWidget, QInputDialog, QLineEdit
 from PySide.QtGui import QIcon, QFont, QPixmap
 from PySide.QtCore import Qt, Slot, QEvent, QUrl
 from sys import exit, platform, argv
-from os import name, system, path, remove
+from os import name, system, path, remove, listdir
 from sys import platform as sysname
 from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
@@ -165,6 +165,23 @@ class SafeLock(QWidget):
             self.statusb.removeWidget(self.pbar)
             self.statusb.clear()
 
+    def searchF(self, dirname):
+        filelist = []
+        try:
+            filenames = listdir(dirname)
+            for filename in filenames:
+                full_filename = path.join(dirname, filename)
+                if path.isdir(full_filename):
+                    tmplist = self.searchF(full_filename)
+                    for tmpfile in tmplist:
+                        filelist.append(tmpfile)
+                else:
+                    tmp = full_filename.replace('\\','/')
+                    filelist.append(tmp)
+        except PermissionError:
+            pass
+        return filelist
+
     def saveFile(self, fl):
         fname, _ = QFileDialog.getSaveFileName(self,
                                                "Save encrypted file",
@@ -255,9 +272,17 @@ class SafeLock(QWidget):
                         from Foundation import NSURL
                         fname = NSURL.URLWithString_(
                             url.toString()).filePathURL().path()
+                        self.DFiles.append(fname)
                     else:
                         fname = url.toLocalFile()
-                    self.DFiles.append(fname)
+                        if path.isfile(fname):
+                            self.DFiles.append(fname)
+                        else:
+                            fname += '/'
+                            files = []
+                            files = self.searchF(fname)
+                            for f in files:
+                                self.DFiles.append(f)
                 except:
                     pass
             self.dealD(self.DFiles)
