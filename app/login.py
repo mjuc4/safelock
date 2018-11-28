@@ -4,7 +4,7 @@ from PySide import QtCore, QtGui
 from __init__ import *
 from login import *
 
-users = {"dhtpwjd":"60142301","rkalstjr":"60132633","wkdtjsgn":"60152233","gksdnwn":"60155355"}
+users = {"dhtpwjd":"60142301","rkalstjr":"60132633","wkdtjsgn":"60152233","gksdnwn":"60155355","ghdgywjd":"60152258"}
 class Example(QtGui.QWidget):
     
     def __init__(self): 
