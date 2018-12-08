@@ -217,6 +217,21 @@ class SafeLock(QWidget):
     def getPass(self):
         passwd, re = QInputDialog.getText(self, "Password", "Enter password :",
                                           QLineEdit.Password)
+        passwd2, re = QInputDialog.getText(self, "Password", "Enter password again :",
+                                          QLineEdit.Password)
+        if passwd != passwd2:
+            self.errorMsg("passwords didn't match.")
+            return False
+        else:
+            if not re:
+                return False
+            if len(passwd) <= 0:
+                return None
+            return passwd
+
+    def getPass2(self):
+        passwd, re = QInputDialog.getText(self, "Password", "Enter password :",
+                                          QLineEdit.Password)
         if not re:
             return False
         if len(passwd) <= 0:
@@ -318,7 +333,7 @@ class SafeLock(QWidget):
                 tf = files[0].split('.')
                 tf = tf[len(tf) - 1]
                 if tf == 'sld':
-                    pw = self.getPass()
+                    pw = self.getPass2()
                     if pw is None:
                         self.errorMsg("You can't set an empty password !")
                         return False
@@ -458,6 +473,5 @@ def gui():
     example = Example()
     example.show()
     app.exit()
-  
+
     app.exec_()
-    
