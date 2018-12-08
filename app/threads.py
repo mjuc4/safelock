@@ -1,5 +1,5 @@
 from PySide.QtCore import QThread, Signal
-from os import walk, path, remove
+from os import walk, path, remove, makedirs
 from pathlib import Path
 from time import sleep
 from random import randint
@@ -7,7 +7,6 @@ from struct import pack, unpack, calcsize
 from Crypto.Cipher import AES
 from tempfile import NamedTemporaryFile
 from ex_functions import writeit
-
 
 class EncryptTH(QThread):
     somesignal = Signal(object)
@@ -147,6 +146,14 @@ class DecryptTH(QThread):
         self.terminate()
 
     def run(self):
+        def mkdir_p(path):
+            try:
+                makedirs(path)
+            except OSError as exc:
+                if exc.errno == errno.EEXIST and os.path.isdir(path):
+                    pass
+                else : raise
+    
         counter = 0
         for f in self.session.query(self.Folder):
             if self.abo is not None:
@@ -156,7 +163,7 @@ class DecryptTH(QThread):
             try:
                 counter += 1
                 if not path.isdir(path.join(self.path, f.path)):
-                    Path(path.join(self.path, f.path)).mkdir(parents=True)
+                    mkdir_p(path.join(self.path, f.path))
                     self.somesignal.emit(
                         str(counter) + '/' + str(self.estmf) + '/%')
                     sleep(0.01)

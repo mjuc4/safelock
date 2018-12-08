@@ -13,7 +13,7 @@ from os import name, system, path, remove, listdir
 from sys import platform as sysname
 from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean, Binary
+from sqlalchemy import Column, Integer, String, Boolean, Binary, Unicode
 from sqlalchemy.orm import sessionmaker
 from threads import EncryptTH, DecryptTH
 from ex_functions import encryptit, isenct, r_path
@@ -69,7 +69,7 @@ class SafeLock(QWidget):
         class Folder(Base):
             __tablename__ = 'folders'
             id = Column(Integer, primary_key=True)
-            path = Column(String)
+            path = Column(Unicode)
 
             def __init__(self, path="Empty"):
                 self.path = path
@@ -165,22 +165,22 @@ class SafeLock(QWidget):
             self.statusb.removeWidget(self.pbar)
             self.statusb.clear()
 
-    def searchF(self, dirname):
-        filelist = []
-        try:
-            filenames = listdir(dirname)
-            for filename in filenames:
-                full_filename = path.join(dirname, filename)
-                if path.isdir(full_filename):
-                    tmplist = self.searchF(full_filename)
-                    for tmpfile in tmplist:
-                        filelist.append(tmpfile)
-                else:
-                    tmp = full_filename.replace('\\','/')
-                    filelist.append(tmp)
-        except PermissionError:
-            pass
-        return filelist
+    # def searchF(self, dirname):
+    #     filelist = []
+    #     try:
+    #         filenames = listdir(dirname)
+    #         for filename in filenames:
+    #             full_filename = path.join(dirname, filename)
+    #             if path.isdir(full_filename):
+    #                 tmplist = self.searchF(full_filename)
+    #                 for tmpfile in tmplist:
+    #                     filelist.append(tmpfile)
+    #             else:
+    #                 tmp = full_filename.replace('\\','/')
+    #                 filelist.append(tmp)
+    #     except PermissionError:
+    #         pass
+    #     return filelist
 
     def saveFile(self, fl):
         fname, _ = QFileDialog.getSaveFileName(self,
@@ -287,17 +287,9 @@ class SafeLock(QWidget):
                         from Foundation import NSURL
                         fname = NSURL.URLWithString_(
                             url.toString()).filePathURL().path()
-                        self.DFiles.append(fname)
                     else:
                         fname = url.toLocalFile()
-                        if path.isfile(fname):
-                            self.DFiles.append(fname)
-                        else:
-                            fname += '/'
-                            files = []
-                            files = self.searchF(fname)
-                            for f in files:
-                                self.DFiles.append(f)
+                    self.DFiles.append(fname)
                 except:
                     pass
             self.dealD(self.DFiles)
