@@ -1,6 +1,8 @@
+﻿# -*- coding: utf-8 -*-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 from __future__ import division
 from PySide.QtGui import QApplication, QLabel, QWidget, QMessageBox
 from PySide.QtGui import QStatusBar, QProgressBar, QPushButton
@@ -113,8 +115,8 @@ class SafeLock(QWidget):
         self.activateWindow()
         self.setWindowTitle("safelock " + self.Version)
         self.setToolTip(
-            "swJust drag and drop any files or folders" +
-            " to ecrypt or a .sld file to decrypt")
+            u"단순히 끌어다 놓는 것으로 파일이나 폴더를 암호화하거나" +
+            u" .sld 파일을 복호화할 수 있습니다.")
         self.setAcceptDrops(True)
         self.show()
 
@@ -131,14 +133,14 @@ class SafeLock(QWidget):
         mmicon = self.logo.pixmap(250, 230, QIcon.Active, QIcon.On)
         self.mIcon.setPixmap(mmicon)
         self.mInst = QLabel(
-            "<center>(Drag and drop files or folders to encrypt them)<br>" +
-            "(Drap and drop .sld file to decrypt it)<br>" +
-            "<u>2GB max single file size to encrypt</u></center>")
+         #   u"<center>(Drag and drop files or folders to encrypt them)<br>" +
+            u"<center>(마우스로 끌어다 놓으십시오)<br>" +
+            u"<u>최대 2GB 파일 또는 디렉토리만 가능</u></center>")
         font = QFont()
         font.setPointSize(13)
         font.setBold(True)
         font.setWeight(75)
-        self.fInst = QLabel('<center>| Double-Click for about |</center>')
+        self.fInst = QLabel('<center></center>')
         self.mInst.setFont(font)
         ll.addWidget(self.mIcon)
         ll.addWidget(self.mInst)
@@ -184,7 +186,7 @@ class SafeLock(QWidget):
 
     def saveFile(self, fl):
         fname, _ = QFileDialog.getSaveFileName(self,
-                                               "Save encrypted file",
+                                               u"암호화 경로 설정",
                                                fl,
                                                "Safelock file (*.sld)")
         if '.' in fname:
@@ -208,29 +210,35 @@ class SafeLock(QWidget):
         return fname
 
     def extTo(self, fl):
-        fname = QFileDialog.getExistingDirectory(self, "Extract files to",
+        fname = QFileDialog.getExistingDirectory(self, u"복호화 경로 설정",
                                                  fl)
         if len(fname) <= 0:
             return None
         return fname
 
     def getPass(self):
-        passwd, re = QInputDialog.getText(self, "Password", "Enter password :",
+        passwd, re = QInputDialog.getText(self, u"비밀번호", u"입력하신 비밀번호 :",
                                           QLineEdit.Password)
-        passwd2, re = QInputDialog.getText(self, "Password", "Enter password again :",
+        if len(passwd) > 0 :
+            passwd2, re = QInputDialog.getText(self, u"비밀번호", u"다시한번 입력하세요 :",
                                           QLineEdit.Password)
-        if passwd != passwd2:
-            self.errorMsg("passwords didn't match.")
-            return False
+            if passwd != passwd2:
+                self.errorMsg(u"비밀번호가 맞지 않습니다")
+                return False
+            else:
+                if not re:
+                    return False
+                if len(passwd) <= 0:
+                    return None
+                return passwd
         else:
             if not re:
                 return False
-            if len(passwd) <= 0:
+            else:
                 return None
-            return passwd
 
     def getPass2(self):
-        passwd, re = QInputDialog.getText(self, "Password", "Enter password :",
+        passwd, re = QInputDialog.getText(self, u"비밀번호", u"입력하신 비밀번호 :",
                                           QLineEdit.Password)
         if not re:
             return False
@@ -238,22 +246,18 @@ class SafeLock(QWidget):
             return None
         return passwd
 
-    def errorMsg(self, msg="Something went wrong !"):
+    def errorMsg(self, msg=u"에러 발생 !"):
         QMessageBox.critical(self, "Error", msg)
         return True
 
     def aboutMsgg(self):
-        Amsg = "<center>All credit reserved to the author of "
-        Amsg += "safelock %s " % self.Version
-        Amsg += ", This work is a free, open-source project licensed "
-        Amsg += " under Mozilla Public License version 2.0 . <br><br>"
-        Amsg += " visit for more info or report:<br> "
-        Amsg += "<b><a href='https://safe-lock.github.io'> "
-        Amsg += "https://safe-lock.github.io/ </a> </b></center>"
-        QMessageBox.about(self,
-                          "About",
-                          Amsg
-                          )
+        Amsg = u"<center>SafeLock %s " % self.Version
+        Amsg += u"은 Mozilla Public License 버전 2.0에 "
+        Amsg += u"따라 허가된 무료 오픈소스 프로젝트 입니다.<br><br>"
+        Amsg += u" 본 프로그램에 대한 더 많은 정보를 원하시면:<br> "
+        Amsg += u"<b><a href='https://github.com/mjuc4/safelock'> "
+        Amsg += u"https://github.com/mjuc4/safelock/ </a> </b></center>"
+        QMessageBox.about(self, "About", Amsg)
         return True
 
     def getSession(self):
@@ -302,17 +306,17 @@ class SafeLock(QWidget):
             self.setAcceptDrops(False)
             self.mIcon.setEnabled(False)
             self.mInst.setEnabled(False)
-            self.fInst.setText("<center>| Double-Click to cancel |</center>")
+            self.fInst.setText(u"<center>| 취소는 더블 클릭 |</center>")
             self.setToolTip("Double-Click anywhere to cancel")
         else:
             self.Processing = None
             self.setAcceptDrops(True)
             self.mIcon.setEnabled(True)
             self.mInst.setEnabled(True)
-            self.fInst.setText("<center>| Double-Click for about |</center>")
+            self.fInst.setText(u"<center>| 취소는 더블 클릭 |</center>")
             self.setToolTip(
-                "Just drag and drop any files or folders" +
-                " to ecrypt or a .sld file to decrypt")
+                u"단순히 끌어다 놓는 것으로 파일이나 폴더를 암호화하거나" +
+                u" .sld 파일을 복호화할 수 있습니다.")
 
     def dealD(self, files):
         def tpp(inp):
@@ -327,14 +331,14 @@ class SafeLock(QWidget):
                 if tf == 'sld':
                     pw = self.getPass2()
                     if pw is None:
-                        self.errorMsg("You can't set an empty password !")
+                        self.errorMsg(u"비밀번호 입력하십쇼!")
                         return False
                     elif not pw:
                         return False
                     if not self.checkP(self.db(sha256(pw).digest(), files[0],
                                                dc=False)):
                         self.errorMsg(
-                            "Wrong password entered, try again.")
+                            u"비밀번호가 맞지 않습니다. 다시 시도하세요")
                         return False
                     else:
                         fold = self.extTo(tpp(files[0]))
@@ -351,7 +355,7 @@ class SafeLock(QWidget):
                             return True
             pw = self.getPass()
             if pw is None:
-                self.errorMsg("You can't set an empty password !")
+                self.errorMsg(u"비밀번호 입력하십시오 !")
             elif not pw:
                 pass
             else:
@@ -400,6 +404,10 @@ class SafeLock(QWidget):
                 if self.Processing:
                     self.in_loop()
                 self.statusb.setStyleSheet(self.s_norm)
+                if message.find('encrypted')>=0 :
+                    QMessageBox.question(None,'success',"Encrypted succes")
+                else:    
+                    QMessageBox.question(None,'success',"Decrypted succes")
             elif message == "# Loading":
                 self.setCursor(Qt.BusyCursor)
                 self.statusb.setStyleSheet(self.s_norm)
@@ -464,6 +472,5 @@ def gui():
     app = QApplication(argv)
     example = Example()
     example.show()
-    app.exit()
 
     app.exec_()

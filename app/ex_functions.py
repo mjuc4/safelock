@@ -1,3 +1,5 @@
+# -*- coding: cp949 -*-
+# -*- coding: utf-8 -*-
 from random import randint
 from struct import pack, unpack, calcsize
 from Crypto.Cipher import AES
