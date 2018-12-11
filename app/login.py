@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from PySide import QtCore, QtGui
+from PySide.QtGui import QApplication, QLabel, QWidget, QMessageBox
 from __init__ import *
 from login import *
 import datetime
@@ -23,8 +24,10 @@ class Example(QtGui.QWidget):
   
      self.startBox = QtGui.QLineEdit()
      self.startBox.setPlaceholderText(u'아이디')
+    
      self.endBox = QtGui.QLineEdit()
      self.endBox.setPlaceholderText(u'비밀번호')
+     self.endBox.setEchoMode(QLineEdit.Password)
 
 
      self.searchButton = QtGui.QPushButton(u'로그인')
